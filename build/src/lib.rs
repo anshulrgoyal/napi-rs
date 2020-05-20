@@ -13,6 +13,7 @@ cfg_if! {
     use std::process::Command;
 
     pub fn setup() {
+      // https://github.com/nodejs/node-gyp/blob/3bcba2a01ab4a3577fa1a56e543bba138d64d9f1/lib/install.js#L220
       let node_full_version =
         String::from_utf8(Command::new("node").arg("-v").output().unwrap().stdout).unwrap();
       let node_exec_path = String::from_utf8(
@@ -46,6 +47,7 @@ cfg_if! {
         &node_lib_file_dir.file_stem().unwrap().to_str().unwrap()
       );
       println!("cargo:rustc-link-search={}", node_lib_dir.to_str().unwrap());
+      // https://www.electronjs.org/docs/tutorial/using-native-node-modules
       // Link `win_delay_load_hook.obj` for windows electron
       let node_runtime_env = "npm_config_runtime";
       println!("cargo:rerun-if-env-changed={}", node_runtime_env);
@@ -56,7 +58,7 @@ cfg_if! {
       }
     }
   } else if #[cfg(target_os = "macos")] {
-    /// Set up the build environment by setting Cargo configuration variables.
+    // Set up the build environment by setting Cargo configuration variables.
     pub fn setup() {
       println!("cargo:rustc-cdylib-link-arg=-undefined");
       println!("cargo:rustc-cdylib-link-arg=dynamic_lookup");
